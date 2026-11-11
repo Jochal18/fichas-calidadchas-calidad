@@ -18,7 +18,7 @@ button{margin-top:14px;width:100%;padding:14px;font-size:18px;font-weight:600;bo
 const N=3,K='fichas-pw';
 if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 let blob=null;
-async function load(){if(blob)return blob;const parts=await Promise.all(Array.from({length:N},(_,i)=>fetch('d'+i+'.bin').then(r=>{if(!r.ok)throw 0;return r.arrayBuffer();})));
+async function load(){if(blob)return blob;const parts=await Promise.all(Array.from({length:N},(_,i)=>fetch('d'+i+'.bin',{cache:'no-cache'}).then(r=>{if(!r.ok)throw 0;return r.arrayBuffer();})));
  const t=parts.reduce((a,b)=>a+b.byteLength,0),u=new Uint8Array(t);let o=0;parts.forEach(b=>{u.set(new Uint8Array(b),o);o+=b.byteLength;});return blob=u;}
 async function open_(pw){const u=await load(),salt=u.slice(0,16),iv=u.slice(16,28),ct=u.slice(28);
  const km=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);
